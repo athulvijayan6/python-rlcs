@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Athul
 # @Date:   2016-03-07 18:04:47
-# @Last Modified by:   Athul Vijayan
-# @Last Modified time: 2016-03-18 10:29:02
+# @Last Modified by:   Athul
+# @Last Modified time: 2016-03-22 11:12:36
 
 # A python implementation of algorithm in
 # 1.Shrey Dutta, Krishnaraj Sekhar PV, Hema A. Murthy:
@@ -70,14 +70,8 @@ def rlcs(X, Y, tau_dist=0.005, delta=0.5):
         tau_dist - with normalized distance below tau_dist, samples are considered similar.
         delta - penalty for gap.
     '''
-    # if the input is vector (1D problem), count the elements
-    # if not, count number of rows. Each point is a row and each column is a dim
     m = X.shape[0]   # Expect matrix/ multidimensional input
     n = Y.shape[0]
-    if (m == 1):     # If input is a vector, take it as 1D array
-        m = X.size
-    if (n == 1):
-        n = Y.size
     # find min distance and max distance
     maxDist = minDist = distance(X[0], Y[0])
     for i in xrange(m):
