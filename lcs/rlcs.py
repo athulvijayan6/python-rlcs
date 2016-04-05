@@ -2,7 +2,7 @@
 # @Author: Athul
 # @Date:   2016-03-07 18:04:47
 # @Last Modified by:   Athul
-# @Last Modified time: 2016-03-22 11:12:36
+# @Last Modified time: 2016-04-05 12:53:27
 
 # A python implementation of algorithm in
 # 1.Shrey Dutta, Krishnaraj Sekhar PV, Hema A. Murthy:
@@ -11,10 +11,8 @@
 # 2.S. Dutta and H. A. Murthy, "A modified rough longest common subsequence algorithm for
 #   motif spotting in an Alapana of Carnatic Music," Communications (NCC), 2014 Twentieth
 #   National Conference on, Kanpur, 2014, pp. 1-6.
-
-
+from __future__ import division
 import numpy as np
-from math import floor
 import matplotlib.pyplot as plt
 
 def distance(x, y, measure="euclidean"): # distance measure.
@@ -41,7 +39,7 @@ def backtrack(X, Y, score, diag, cost):
                 maxScore = score[i, j]
                 x, y = i, j         # indices of max score
     segLen = 0
-    segment = np.array([[0, 0, 0]])   # stores ref position, query position, color for each point
+    segment = np.array([[0, 0, 0]], dtype=np.float64)   # stores ref position, query position, color for each point
     while(x != 0) and (y != 0):
         i = segLen
         segment[i][0] = x - 1
@@ -82,10 +80,10 @@ def rlcs(X, Y, tau_dist=0.005, delta=0.5):
             if dist < minDist:
                 minDist = dist
     # Initialize matrices for dynamic programming
-    cost = np.zeros((m+2, n+2)) # for storing running score
-    score = np.zeros((m+2, n+2)) # for storing score
-    diag = np.zeros((m+2, n+2)) # For backtracking cross = 0, up = 2, left = 3
-    partial = np.zeros((m+2, n+2)) # for storing partial scores.
+    cost = np.zeros((m+2, n+2), dtype=np.float64) # for storing running score
+    score = np.zeros((m+2, n+2), dtype=np.float64) # for storing score
+    diag = np.zeros((m+2, n+2), dtype=np.float64) # For backtracking cross = 0, up = 2, left = 3
+    partial = np.zeros((m+2, n+2), dtype=np.float64) # for storing partial scores.
     p = min(m, n)
 
     loop_count = 0
@@ -165,14 +163,39 @@ def plotLCS(segment, X, Y):
 
     matplotlib axis and fig is returned.'''
     fig, ax = plt.subplots(figsize=(14, 12))
-    match = np.zeros((X.shape[0], Y.shape[0]))
+    match = np.zeros((X.shape[0], Y.shape[0]), dtype=np.float64)
     for m in segment:
-        i, j = m[0], m[1]
+        i, j = int(m[0]), int(m[1])
         match[i-1, j-1] = m[2]
     cax = ax.imshow(match, aspect='auto', origin='lower', interpolation="none")
     ax.grid(True)
     cbar = fig.colorbar(cax)
-    return fig, ax    
+    return fig, ax
+
+def getSoftSegments(segment, X, Y, score_thres=1e-4, len_thres=10):
+    idx = np.where(segment[:, 2] > score_thres)[0]
+    xSegs = []
+    ySegs = []
+    j = 0
+    for i in xrange(idx.size-1):
+        if (idx[i+1] > idx[i] + 1):
+            selIdx = idx[j:i+1]
+            if len(selIdx) > len_thres:
+                xIdx = [int(k) for k in segment[selIdx, 0]]
+                xSegs.append(X[xIdx])
+                yIdx = [int(k) for k in segment[selIdx, 1]]
+                ySegs.append(Y[yIdx])            
+            j = i+1
+        elif (i == idx.size-2):
+            selIdx = idx[j:i+2]
+            if len(selIdx) > len_thres:
+                xIdx = [int(k) for k in segment[selIdx, 0]]
+                xSegs.append(X[xIdx])
+                yIdx = [int(k) for k in segment[selIdx, 1]]
+                ySegs.append(Y[yIdx])            
+            j = i+1
+    return xSegs, ySegs
+
 
 if __name__ == '__main__':
     print(''' This module is not intended to run from interpreter.

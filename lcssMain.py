@@ -3,7 +3,7 @@
 # @Author: Athul
 # @Date:   2016-02-23 16:00:11
 # @Last Modified by:   Athul
-# @Last Modified time: 2016-03-22 11:16:00
+# @Last Modified time: 2016-04-05 12:58:33
 from __future__ import division
 import numpy as np
 import scipy.io
@@ -29,7 +29,15 @@ score, diag, cost = rlcs.rlcs(X, Y, tau_dist= tau_dist,  delta=0.5)
 segment = rlcs.backtrack(X, Y, score, diag, cost)
 lenSeg = segment.shape[0]
 
+xSegs, ySegs = rlcs.getSoftSegments(segment, X, Y)
+
 # ========================= Plots here ===========================
+# ================ Plot extracted subsequences ===================
+fig, ax = plt.subplots()
+xseg, yseg = xSegs[0], ySegs[0]
+ax.plot(xrange(xseg.size), xseg, 'r')
+ax.plot(xrange(yseg.size), yseg, 'b')
+
 # Plot the score matrix
 fig, ax = rlcs.plotLCS(segment, X, Y)
 
