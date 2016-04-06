@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Athul
 # @Date:   2016-02-23 16:00:11
-# @Last Modified by:   Athul
-# @Last Modified time: 2016-04-05 12:58:33
+# @Last Modified by:   Athul Vijayan
+# @Last Modified time: 2016-04-05 23:23:18
 from __future__ import division
 import numpy as np
 import scipy.io
@@ -34,9 +34,13 @@ xSegs, ySegs = rlcs.getSoftSegments(segment, X, Y)
 # ========================= Plots here ===========================
 # ================ Plot extracted subsequences ===================
 fig, ax = plt.subplots()
-xseg, yseg = xSegs[0], ySegs[0]
-ax.plot(xrange(xseg.size), xseg, 'r')
-ax.plot(xrange(yseg.size), yseg, 'b')
+xseg, yseg = xSegs[1], ySegs[1]
+ax.plot(xrange(xseg.size), xseg)
+ax.plot(xrange(yseg.size), yseg)
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_title('Matched signals for rlcs with dist_thres ' + str(tau_dist))
+fig.savefig(plotDir+'rlcsMain_getSegs.eps')
 
 # Plot the score matrix
 fig, ax = rlcs.plotLCS(segment, X, Y)
